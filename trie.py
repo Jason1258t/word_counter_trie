@@ -15,10 +15,11 @@ class Trie:
         return node
 
     def push(self, string):
-        if len(string) > 1:
-            string = string[1:]
-            v = string[0]
-            node = self._get_child_by_value(v)
-            node.push(string)
-        else:
+        if len(string) <= 1:
             self.count += 1
+            return
+
+        string = string[1:]
+        v = string[0]
+        node = self._get_child_by_value(v)
+        node.push(string)
