@@ -1,5 +1,5 @@
 class Trie:
-    default_depth = 2
+    default_relations_depth = 2
 
     def __init__(self, value, path=''):
         self.value = value
@@ -12,15 +12,6 @@ class Trie:
     def count_with_relations(self):
         return sum([x['cnt'] for x in self.related_words])
 
-    def _get_child_by_value(self, v: str):
-        for n in self.children:
-            if n.value == v:
-                return n
-
-        node = Trie(v, self.full_path)
-        self.children.append(node)
-        return node
-
     def push(self, string):
         if len(string) <= 1:
             self.count += 1
@@ -31,10 +22,19 @@ class Trie:
         node = self._get_child_by_value(v)
         node.push(string)
 
+    def _get_child_by_value(self, v: str):
+        for n in self.children:
+            if n.value == v:
+                return n
+
+        node = Trie(v, self.full_path)
+        self.children.append(node)
+        return node
+
     def get_related_children(self, depth):
         """calling this function also updates field related_words"""
         if depth == 0: return []
-        if len(self.full_path) < 4 and (self.count == 0 or depth != self.default_depth):
+        if len(self.full_path) < 4 and (self.count == 0 or depth != self.default_relations_depth):
             return []
 
         res = []
