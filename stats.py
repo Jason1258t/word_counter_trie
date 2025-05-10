@@ -14,16 +14,19 @@ class WordStatistics:
         return self._get_node_statistics(self.root)
 
     def _get_node_statistics(self, node: Trie):
+        node.get_related_children(Trie.default_depth)
         if len(node.children) == 0:
-            word = self._normalize_word(node.full_path)
-            return {word: node.count}
+            words = [self._normalize_word(w['word']) for w in node.related_words]
+            if  node.count_with_relations == 0:
+                print(node)
+            return {str(words): node.count_with_relations}
 
         stats = {}
         for n in node.children:
             stats = {**stats, **self._get_node_statistics(n)}
         if node.count != 0:
-            word = self._normalize_word(node.full_path)
-            stats = {**stats, **{word: node.count}}
+            words = [self._normalize_word(w['word']) for w in node.related_words]
+            stats = {**stats, **{str(words): node.count_with_relations}}
         return stats
 
     @classmethod
